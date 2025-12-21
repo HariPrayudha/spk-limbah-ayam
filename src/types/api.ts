@@ -1,24 +1,25 @@
 export interface ApiResponse<T> {
-  success?: boolean;
-  data?: T;
+  success: boolean;
+  data: T;
   message?: string;
+  total?: number;
 }
 
 export interface Criterion {
+  id: number; // WAJIB ADA (Hapus tanda tanya ?)
   code: string;
   name: string;
-  type: "Benefit" | "Cost";
+  type: string; // string biasa agar support 'cost'/'benefit' variatif
+  initial_weight?: number;
   description?: string;
-  weight?: number;
 }
 
 export interface Alternative {
+  id: number; // WAJIB ADA (Hapus tanda tanya ?)
   code: string;
   name: string;
   description?: string;
 }
-
-export type DecisionMatrix = Record<string, Record<string, number>>;
 
 export interface RankingResult {
   rank: number;
@@ -32,10 +33,4 @@ export interface AnalysisResponse {
   weights_used: Record<string, number>;
   final_ranking: RankingResult[];
   recommendation: string;
-}
-
-export interface AnalysisPayload {
-  use_initial_weights: boolean;
-  combine_weights: boolean;
-  alpha: number;
 }
