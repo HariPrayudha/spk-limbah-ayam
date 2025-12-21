@@ -13,6 +13,7 @@ import {
   NativeSyntheticEvent,
   Pressable,
   RefreshControl,
+  StyleSheet,
   Text,
   View,
 } from "react-native";
@@ -25,6 +26,7 @@ export default function DataScreen() {
   const { toggleTabBar } = useTabBar();
   const lastContentOffset = useRef(0);
 
+  // State Tab Aktif
   const [activeTab, setActiveTab] = useState<"criteria" | "alternatives">(
     "criteria"
   );
@@ -81,27 +83,38 @@ export default function DataScreen() {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const currentOffset = event.nativeEvent.contentOffset.y;
-
     if (currentOffset > lastContentOffset.current && currentOffset > 20) {
       toggleTabBar(false);
     } else if (currentOffset < lastContentOffset.current) {
       toggleTabBar(true);
     }
-
     lastContentOffset.current = currentOffset;
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#FDFBF7]">
-      <View className="px-6 pt-6 pb-6">
-        <Text className="text-3xl font-black text-dark mb-1">Data Master</Text>
-        <Text className="text-gray-500 text-sm">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFBF7" }}>
+      {/* Header */}
+      <View
+        style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 24 }}
+      >
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: "900",
+            color: "#1c1917",
+            marginBottom: 4,
+          }}
+        >
+          Data Master
+        </Text>
+        <Text style={{ color: "#6b7280", fontSize: 14 }}>
           Kelola parameter keputusan SPK.
         </Text>
       </View>
 
-      <View className="px-6 mb-6">
-        <View className="flex-row bg-white p-1.5 rounded-2xl border border-gray-100 shadow-sm">
+      {/* TAB SWITCHER - FIX LOGIC STYLE */}
+      <View style={{ paddingHorizontal: 24, marginBottom: 24 }}>
+        <View style={styles.tabContainer}>
           <TabButton
             isActive={activeTab === "criteria"}
             onPress={() => setActiveTab("criteria")}
@@ -117,21 +130,24 @@ export default function DataScreen() {
         </View>
       </View>
 
+      {/* Content */}
       {loading ? (
-        <View className="flex-1 justify-center items-center">
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large" color="#ea580c" />
-          <Text className="text-gray-400 mt-4 text-xs font-medium">
+          <Text style={{ color: "#9ca3af", marginTop: 16, fontWeight: "500" }}>
             Mengambil data...
           </Text>
         </View>
       ) : (
-        <View className="flex-1 px-6">
+        <View style={{ flex: 1, paddingHorizontal: 24 }}>
           {activeTab === "criteria" ? (
             <FlatList
               data={criteria}
               keyExtractor={(item) => item.code}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 100 }}
+              contentContainerStyle={{ paddingBottom: 20 }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -147,7 +163,7 @@ export default function DataScreen() {
               data={alternatives}
               keyExtractor={(item) => item.code}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 100 }}
+              contentContainerStyle={{ paddingBottom: 20 }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -165,83 +181,96 @@ export default function DataScreen() {
   );
 }
 
-const TabButton = ({ isActive, onPress, label, icon: Icon }: any) => (
-  <View className="flex-1 overflow-hidden rounded-xl">
+// --- KOMPONEN TAB BUTTON (FIXED STYLE) ---
+const TabButton = ({ isActive, onPress, label, icon: Icon }: any) => {
+  return (
     <Pressable
       onPress={onPress}
-      android_ripple={{ color: "rgba(160, 160, 160, 0.1)" }}
-      className={`flex-row items-center justify-center py-3 ${
-        isActive ? "bg-[#1c1917]" : "bg-transparent"
-      }`}
+      style={[
+        styles.tabButton,
+        isActive ? styles.tabButtonActive : styles.tabButtonInactive,
+      ]}
     >
-      <Icon size={16} color={isActive ? "#fff" : "#9ca3af"} strokeWidth={2.5} />
+      <Icon
+        size={16}
+        color={isActive ? "#ffffff" : "#9ca3af"} // Icon Putih jika Aktif, Abu jika Mati
+        strokeWidth={2.5}
+      />
       <Text
-        className={`ml-2 font-bold text-sm ${
-          isActive ? "text-white" : "text-gray-400"
-        }`}
+        style={[
+          styles.tabText,
+          isActive ? styles.tabTextActive : styles.tabTextInactive,
+        ]}
       >
         {label}
       </Text>
     </Pressable>
-  </View>
-);
+  );
+};
+
+// --- COMPONENTS CARD ---
 
 const CriterionCard = ({ item }: { item: Criterion }) => {
   const isBenefit = item.type.toLowerCase() === "benefit";
-
   return (
-    <View className="bg-white p-5 mb-4 rounded-3xl border border-gray-100 shadow-sm flex-row items-start">
+    <View style={styles.card}>
       <View
-        className={`w-12 h-12 rounded-2xl items-center justify-center mr-4 ${
-          isBenefit ? "bg-emerald-50" : "bg-rose-50"
-        }`}
+        style={[styles.iconBox, isBenefit ? styles.bgEmerald : styles.bgRose]}
       >
         <Text
-          className={`font-black text-lg ${
-            isBenefit ? "text-emerald-600" : "text-rose-600"
-          }`}
+          style={[
+            styles.codeText,
+            isBenefit ? { color: "#059669" } : { color: "#e11d48" },
+          ]}
         >
           {item.code}
         </Text>
       </View>
-
-      <View className="flex-1">
-        <View className="flex-row justify-between items-center mb-2">
-          <Text
-            className="font-bold text-dark text-base flex-1 mr-2"
-            numberOfLines={1}
-          >
+      <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <Text style={styles.itemName} numberOfLines={1}>
             {item.name}
           </Text>
           <View
-            className={`px-2.5 py-1 rounded-lg ${
-              isBenefit ? "bg-emerald-100" : "bg-rose-100"
-            }`}
+            style={[
+              styles.badge,
+              isBenefit ? styles.bgEmeraldLight : styles.bgRoseLight,
+            ]}
           >
             <Text
-              className={`text-[10px] font-bold uppercase ${
-                isBenefit ? "text-emerald-700" : "text-rose-700"
-              }`}
+              style={[
+                styles.badgeText,
+                isBenefit ? { color: "#047857" } : { color: "#be123c" },
+              ]}
             >
               {item.type}
             </Text>
           </View>
         </View>
-
-        <Text
-          className="text-gray-500 text-xs leading-relaxed mb-3"
-          numberOfLines={2}
-        >
+        <Text style={styles.descText} numberOfLines={2}>
           {item.description || "Tidak ada deskripsi tersedia."}
         </Text>
-
-        <View className="flex-row items-center bg-gray-50 self-start px-2 py-1 rounded-lg">
+        <View style={styles.trendBadge}>
           {isBenefit ? (
             <TrendingUp size={12} color="#059669" />
           ) : (
             <TrendingDown size={12} color="#e11d48" />
           )}
-          <Text className="text-[10px] text-gray-400 ml-1.5 font-medium">
+          <Text
+            style={{
+              fontSize: 10,
+              color: "#9ca3af",
+              marginLeft: 6,
+              fontWeight: "500",
+            }}
+          >
             {isBenefit ? "Nilai tinggi lebih baik" : "Nilai rendah lebih baik"}
           </Text>
         </View>
@@ -251,14 +280,21 @@ const CriterionCard = ({ item }: { item: Criterion }) => {
 };
 
 const AlternativeCard = ({ item }: { item: Alternative }) => (
-  <View className="bg-white p-4 mb-3 rounded-2xl border border-gray-100 shadow-sm flex-row items-center">
-    <View className="w-10 h-10 bg-orange-50 rounded-full items-center justify-center mr-4 border border-orange-100">
-      <Text className="font-bold text-orange-600 text-xs">{item.code}</Text>
+  <View style={styles.card}>
+    <View
+      style={[
+        styles.iconBox,
+        { backgroundColor: "#fff7ed", borderColor: "#ffedd5" },
+      ]}
+    >
+      <Text style={{ fontWeight: "bold", color: "#ea580c", fontSize: 12 }}>
+        {item.code}
+      </Text>
     </View>
-    <View className="flex-1">
-      <Text className="font-bold text-dark text-base">{item.name}</Text>
+    <View style={{ flex: 1 }}>
+      <Text style={styles.itemName}>{item.name}</Text>
       {item.description && (
-        <Text className="text-gray-400 text-xs mt-0.5" numberOfLines={1}>
+        <Text style={styles.descText} numberOfLines={1}>
           {item.description}
         </Text>
       )}
@@ -267,8 +303,119 @@ const AlternativeCard = ({ item }: { item: Alternative }) => (
 );
 
 const EmptyState = ({ message }: { message: string }) => (
-  <View className="items-center justify-center py-20 opacity-50">
+  <View
+    style={{
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 80,
+      opacity: 0.5,
+    }}
+  >
     <Info size={40} color="#9ca3af" />
-    <Text className="text-gray-400 font-medium mt-4">{message}</Text>
+    <Text style={{ color: "#9ca3af", fontWeight: "500", marginTop: 16 }}>
+      {message}
+    </Text>
   </View>
 );
+
+// --- STYLESHEET (Agar performa styling 100% akurat) ---
+const styles = StyleSheet.create({
+  tabContainer: {
+    flexDirection: "row",
+    backgroundColor: "#ffffff",
+    padding: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#f3f4f6",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  tabButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  // Style Aktif (Background Hitam)
+  tabButtonActive: {
+    backgroundColor: "#1c1917",
+  },
+  // Style Tidak Aktif (Background Transparan)
+  tabButtonInactive: {
+    backgroundColor: "transparent",
+  },
+  tabText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  // Teks Aktif (Putih)
+  tabTextActive: {
+    color: "#ffffff",
+  },
+  // Teks Tidak Aktif (Abu)
+  tabTextInactive: {
+    color: "#9ca3af",
+  },
+
+  // Card Styles
+  card: {
+    backgroundColor: "#ffffff",
+    padding: 20,
+    marginBottom: 16,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "#f3f4f6",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 15,
+    elevation: 2,
+  },
+  iconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  bgEmerald: { backgroundColor: "#ecfdf5", borderColor: "#d1fae5" },
+  bgRose: { backgroundColor: "#fff1f2", borderColor: "#ffe4e6" },
+  bgEmeraldLight: { backgroundColor: "#d1fae5" },
+  bgRoseLight: { backgroundColor: "#ffe4e6" },
+  codeText: { fontWeight: "900", fontSize: 16 },
+  itemName: {
+    fontWeight: "bold",
+    color: "#1c1917",
+    fontSize: 16,
+    flex: 1,
+    marginRight: 8,
+  },
+  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  badgeText: { fontSize: 10, fontWeight: "bold", textTransform: "uppercase" },
+  descText: {
+    color: "#6b7280",
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  trendBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9fafb",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    alignSelf: "flex-start",
+  },
+});
