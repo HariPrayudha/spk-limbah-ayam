@@ -4,6 +4,7 @@ import {
     Database,
     Server,
     TrendingUp,
+    Zap,
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Image, RefreshControl, ScrollView, Text, View } from "react-native";
@@ -16,11 +17,9 @@ export default function HomeScreen() {
   const [stats, setStats] = useState({ criteria: 0, alternatives: 0 });
 
   const fetchData = async () => {
-    // 1. Cek Server
     const health = await apiService.checkHealth();
-    setServerStatus(!!health); // true jika health ada isinya
+    setServerStatus(!!health);
 
-    // 2. Jika server hidup, ambil jumlah data (simulasi count dlu)
     if (health) {
       const criteria = await apiService.getCriteria();
       const alts = await apiService.getAlternatives();
@@ -45,127 +44,149 @@ export default function HomeScreen() {
     <SafeAreaView className="flex-1 bg-[#FDFBF7]">
       <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {/* Header */}
-        <View className="px-6 pt-6 mb-8">
+        <View className="px-6 pt-6 mb-6">
           <View className="flex-row justify-between items-center">
             <View>
-              <Text className="text-gray-500 font-medium text-sm">
-                Selamat Datang,
+              <Text className="text-gray-400 font-semibold text-xs uppercase tracking-wider mb-1">
+                Dashboard
               </Text>
-              <Text className="text-2xl font-bold text-dark">
-                Researcher 👋
+              <Text className="text-3xl font-black text-dark tracking-tight">
+                Halo, Researcher
               </Text>
             </View>
-            <View className="bg-white p-2 rounded-full border border-gray-100">
+            <View className="bg-white p-1 rounded-full border-2 border-orange-50 shadow-sm">
               <Image
-                source={{
-                  uri: "https://ui-avatars.com/api/?name=Admin&background=ea580c&color=fff",
-                }}
-                className="w-10 h-10 rounded-full"
+                source={require("../../assets/images/avatar.jpg")}
+                className="w-12 h-12 rounded-full"
               />
             </View>
           </View>
         </View>
 
-        {/* Server Status Card */}
-        <View className="px-6 mb-6">
-          <View
-            className={`p-4 rounded-2xl flex-row items-center space-x-4 ${
-              serverStatus ? "bg-emerald-100" : "bg-rose-100"
-            }`}
-          >
-            <View
-              className={`p-3 rounded-full ${
-                serverStatus ? "bg-emerald-200" : "bg-rose-200"
-              }`}
-            >
-              {serverStatus ? (
-                <Server size={24} color="#059669" />
-              ) : (
-                <AlertCircle size={24} color="#e11d48" />
-              )}
-            </View>
-            <View className="flex-1">
-              <Text className="font-bold text-base text-dark">
-                Backend Server
-              </Text>
-              <Text className="text-gray-600 text-xs">
-                {serverStatus
-                  ? "Terhubung & Siap Analisis"
-                  : "Terputus. Cek koneksi API."}
-              </Text>
-            </View>
-            {serverStatus && (
-              <View className="bg-emerald-500 px-3 py-1 rounded-full">
-                <Text className="text-white text-xs font-bold">ONLINE</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/* Stats Grid */}
         <View className="px-6 mb-8">
-          <Text className="text-lg font-bold text-dark mb-4">
-            Ringkasan Data
-          </Text>
-          <View className="flex-row justify-between gap-4">
-            {/* Card Kriteria */}
-            <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-              <View className="bg-orange-100 w-10 h-10 rounded-full items-center justify-center mb-3">
-                <Activity size={20} color="#ea580c" />
+          <View className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 flex-row items-center justify-between">
+            <View className="flex-row items-center flex-1">
+              <View
+                className={`w-12 h-12 rounded-2xl items-center justify-center mr-4 ${
+                  serverStatus ? "bg-emerald-50" : "bg-rose-50"
+                }`}
+              >
+                {serverStatus ? (
+                  <Server size={24} color="#10b981" />
+                ) : (
+                  <AlertCircle size={24} color="#f43f5e" />
+                )}
               </View>
-              <Text className="text-3xl font-black text-dark">
-                {stats.criteria}
-              </Text>
-              <Text className="text-gray-500 text-xs">Kriteria Penilaian</Text>
-            </View>
-
-            {/* Card Alternatif */}
-            <View className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-              <View className="bg-lime-100 w-10 h-10 rounded-full items-center justify-center mb-3">
-                <Database size={20} color="#65a30d" />
-              </View>
-              <Text className="text-3xl font-black text-dark">
-                {stats.alternatives}
-              </Text>
-              <Text className="text-gray-500 text-xs">Produk Limbah</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Quick Action */}
-        <View className="px-6">
-          <Text className="text-lg font-bold text-dark mb-4">
-            Metode Hibrid
-          </Text>
-          <View className="bg-dark p-6 rounded-3xl shadow-lg relative overflow-hidden">
-            {/* Decor */}
-            <View className="absolute -right-10 -top-10 w-40 h-40 bg-gray-800 rounded-full opacity-50" />
-
-            <View className="flex-row items-center gap-2 mb-2">
-              <TrendingUp color="#ea580c" size={24} />
-              <Text className="text-white font-bold text-xl">
-                CRITIC - MARCOS
-              </Text>
-            </View>
-            <Text className="text-gray-400 text-sm mb-4 leading-relaxed">
-              Kombinasi pembobotan objektif (CRITIC) dan pemeringkatan kompromi
-              (MARCOS) untuk hasil yang akurat.
-            </Text>
-
-            <View className="flex-row gap-2">
-              <View className="bg-gray-800 px-3 py-1 rounded-lg border border-gray-700">
-                <Text className="text-orange-400 text-xs font-bold">
-                  Objektif
+              <View>
+                <Text className="font-bold text-base text-dark mb-0.5">
+                  System Status
+                </Text>
+                <Text
+                  className={`text-xs font-medium ${
+                    serverStatus ? "text-emerald-600" : "text-rose-600"
+                  }`}
+                >
+                  {serverStatus
+                    ? "Semua layanan berjalan normal"
+                    : "Koneksi ke server terputus"}
                 </Text>
               </View>
-              <View className="bg-gray-800 px-3 py-1 rounded-lg border border-gray-700">
-                <Text className="text-lime-400 text-xs font-bold">
-                  Efisiensi
+            </View>
+            <View
+              className={`w-3 h-3 rounded-full ${
+                serverStatus ? "bg-emerald-500" : "bg-rose-500"
+              }`}
+            />
+          </View>
+        </View>
+
+        <View className="px-6 mb-8">
+          <View className="flex-row items-end justify-between mb-4">
+            <Text className="text-lg font-bold text-dark">Ringkasan Data</Text>
+            <Text className="text-xs text-gray-400 font-medium">
+              Update Real-time
+            </Text>
+          </View>
+
+          <View className="flex-row justify-between gap-4">
+            <View className="flex-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+              <View className="absolute top-0 right-0 p-4 opacity-5">
+                <Activity size={80} color="#ea580c" />
+              </View>
+
+              <View className="bg-orange-50 w-10 h-10 rounded-xl items-center justify-center mb-4">
+                <Activity size={20} color="#ea580c" />
+              </View>
+              <Text className="text-4xl font-black text-dark mb-1">
+                {stats.criteria}
+              </Text>
+              <Text className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+                Kriteria Aktif
+              </Text>
+            </View>
+
+            <View className="flex-1 bg-white p-5 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+              <View className="absolute top-0 right-0 p-4 opacity-5">
+                <Database size={80} color="#65a30d" />
+              </View>
+
+              <View className="bg-lime-50 w-10 h-10 rounded-xl items-center justify-center mb-4">
+                <Database size={20} color="#65a30d" />
+              </View>
+              <Text className="text-4xl font-black text-dark mb-1">
+                {stats.alternatives}
+              </Text>
+              <Text className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+                Alternatif
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <View className="px-6">
+          <Text className="text-lg font-bold text-dark mb-4">
+            Metode Analisis
+          </Text>
+          <View className="bg-[#1c1917] p-6 rounded-[32px] shadow-xl shadow-gray-300 relative overflow-hidden">
+            <View className="absolute -right-6 -top-6 w-32 h-32 bg-gray-800 rounded-full opacity-40 blur-2xl" />
+            <View className="absolute -left-6 -bottom-6 w-32 h-32 bg-orange-900 rounded-full opacity-20 blur-2xl" />
+
+            <View className="flex-row items-start justify-between mb-6">
+              <View>
+                <View className="flex-row items-center gap-2 mb-1">
+                  <TrendingUp color="#fb923c" size={20} />
+                  <Text className="text-orange-400 font-bold tracking-widest text-xs uppercase">
+                    Hibrid System
+                  </Text>
+                </View>
+                <Text className="text-white font-black text-2xl">
+                  CRITIC - MARCOS
+                </Text>
+              </View>
+              <View className="bg-gray-800/50 p-2 rounded-xl">
+                <Zap color="#fff" size={20} fill="#fff" />
+              </View>
+            </View>
+
+            <Text className="text-gray-400 text-sm mb-6 leading-relaxed">
+              Menggabungkan ketepatan pembobotan objektif dengan efisiensi
+              pemeringkatan kompromi untuk hasil akurat.
+            </Text>
+
+            <View className="flex-row gap-3">
+              <View className="bg-white/10 px-4 py-2 rounded-xl border border-white/5">
+                <Text className="text-white text-xs font-bold">
+                  Objektifitas Tinggi
+                </Text>
+              </View>
+              <View className="bg-white/10 px-4 py-2 rounded-xl border border-white/5">
+                <Text className="text-white text-xs font-bold">
+                  Ranking Stabil
                 </Text>
               </View>
             </View>
