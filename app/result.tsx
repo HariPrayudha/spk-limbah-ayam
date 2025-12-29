@@ -1,19 +1,19 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
-    Activity,
-    ArrowLeft,
-    Award,
-    BarChart3,
-    List,
-    PieChart,
-    Trophy
+  Activity,
+  ArrowLeft,
+  Award,
+  BarChart3,
+  List,
+  PieChart,
+  Trophy,
 } from "lucide-react-native";
 import {
-    Dimensions,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,7 +25,6 @@ export default function ResultScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  // Parse data
   const resultData: AnalysisResponse | null = params.data
     ? JSON.parse(params.data as string)
     : null;
@@ -33,17 +32,16 @@ export default function ResultScreen() {
   if (!resultData)
     return (
       <View className="flex-1 justify-center items-center bg-[#FDFBF7]">
-        <Text className="text-gray-500">Data tidak ditemukan</Text>
+        <Text className="text-gray-500">Data not found</Text>
       </View>
     );
 
   const topWinner = resultData.final_ranking[0];
 
-  // DATA UNTUK CHART (Ambil Top 5 Saja biar rapi)
   const chartData = resultData.final_ranking.slice(0, 5).map((item) => ({
     value: item.score,
     label: item.alternative_code,
-    frontColor: item.rank === 1 ? "#ea580c" : "#fdba74", // Juara 1 warnanya beda
+    frontColor: item.rank === 1 ? "#ea580c" : "#fdba74",
     topLabelComponent: () => (
       <Text className="text-[10px] text-gray-500 mb-1 font-bold">
         {item.score.toFixed(3)}
@@ -51,17 +49,13 @@ export default function ResultScreen() {
     ),
   }));
 
-  // DATA BOBOT (Sorted by Value)
   const weightsArray = Object.entries(resultData.weights_used).sort(
     ([, a], [, b]) => b - a
-  ); // Urutkan dari bobot terbesar
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-[#1c1917]">
-      {/* Background Dark biar elegan untuk hasil */}
-
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* HEADER */}
         <View className="p-6 pb-2">
           <TouchableOpacity
             onPress={() => router.back()}
@@ -71,22 +65,20 @@ export default function ResultScreen() {
               <ArrowLeft color="white" size={20} />
             </View>
             <Text className="text-white font-bold text-base">
-              Kembali ke Input
+              Back to Input
             </Text>
           </TouchableOpacity>
 
           <Text className="text-orange-500 font-bold uppercase tracking-widest text-xs mb-1">
-            Hasil Keputusan
+            Decision Result
           </Text>
           <Text className="text-3xl font-black text-white leading-tight">
-            Rekomendasi{"\n"}Produk Terbaik
+            Best Product{"\n"}Recommendation
           </Text>
         </View>
 
-        {/* 🏆 WINNER CARD */}
         <View className="mx-6 mt-4 mb-8">
           <View className="bg-orange-600 rounded-[32px] p-6 border-t border-white/20 shadow-2xl shadow-orange-500/50 relative overflow-hidden">
-            {/* Background Pattern */}
             <View className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full" />
             <View className="absolute -left-10 -top-10 w-32 h-32 bg-black/10 rounded-full" />
 
@@ -95,7 +87,7 @@ export default function ResultScreen() {
                 <Trophy size={40} color="#ea580c" fill="#ea580c" />
               </View>
               <Text className="text-white/80 font-bold text-sm uppercase tracking-widest mb-1">
-                Peringkat #1
+                Rank #1
               </Text>
               <Text className="text-white font-black text-3xl text-center mb-2">
                 {topWinner.alternative_name}
@@ -109,17 +101,15 @@ export default function ResultScreen() {
           </View>
         </View>
 
-        {/* 📊 CHART SECTION */}
         <View className="bg-[#FDFBF7] rounded-t-[40px] px-6 pt-8 pb-10 min-h-screen">
           <View className="flex-row items-center mb-6">
             <BarChart3 size={24} color="#ea580c" />
             <Text className="text-xl font-black text-dark ml-2">
-              Grafik 5 Besar
+              Top 5 Chart
             </Text>
           </View>
 
           <View className="items-center mb-10 -ml-4">
-            {/* Chart Component */}
             <BarChart
               data={chartData}
               barWidth={32}
@@ -137,17 +127,16 @@ export default function ResultScreen() {
             />
           </View>
 
-          {/* ⚖️ WEIGHTS SECTION */}
           <View className="mb-10">
             <View className="flex-row items-center mb-4">
               <PieChart size={24} color="#ea580c" />
               <Text className="text-xl font-black text-dark ml-2">
-                Bobot Kriteria (CRITIC)
+                Criteria Weights (CRITIC)
               </Text>
             </View>
             <Text className="text-gray-400 text-xs mb-4">
-              Metode CRITIC menghitung bobot secara objektif berdasarkan
-              simpangan baku data.
+              The CRITIC method calculates weights objectively based on data
+              standard deviation.
             </Text>
 
             <ScrollView
@@ -169,7 +158,7 @@ export default function ResultScreen() {
                   <View className="w-full h-1 bg-gray-100 rounded-full mt-2 overflow-hidden">
                     <View
                       className="h-full bg-orange-500"
-                      style={{ width: `${weight * 100 * 3}%` }} // Skala visual aja biar kelihatan
+                      style={{ width: `${weight * 100 * 3}%` }}
                     />
                   </View>
                 </View>
@@ -177,12 +166,11 @@ export default function ResultScreen() {
             </ScrollView>
           </View>
 
-          {/* 📋 FULL RANKING LIST */}
           <View>
             <View className="flex-row items-center mb-4">
               <List size={24} color="#ea580c" />
               <Text className="text-xl font-black text-dark ml-2">
-                Ranking Lengkap
+                Complete Ranking
               </Text>
             </View>
 
@@ -249,7 +237,7 @@ export default function ResultScreen() {
             >
               <Activity size={20} color="#1c1917" />
               <Text className="font-black text-dark ml-2 text-base">
-                Cek Stabilitas Ranking
+                Check Ranking Stability
               </Text>
             </TouchableOpacity>
           </View>
