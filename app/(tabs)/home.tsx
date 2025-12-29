@@ -1,10 +1,10 @@
 import {
-    Activity,
-    AlertCircle,
-    Database,
-    Server,
-    TrendingUp,
-    Zap,
+  Activity,
+  AlertCircle,
+  Database,
+  Server,
+  TrendingUp,
+  Zap,
 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Image, RefreshControl, ScrollView, Text, View } from "react-native";
@@ -56,7 +56,7 @@ export default function HomeScreen() {
                 Dashboard
               </Text>
               <Text className="text-3xl font-black text-dark tracking-tight">
-                Halo, Researcher
+                Hello, Researcher
               </Text>
             </View>
             <View className="bg-white p-1 rounded-full border-2 border-orange-50 shadow-sm">
@@ -92,8 +92,8 @@ export default function HomeScreen() {
                   }`}
                 >
                   {serverStatus
-                    ? "Semua layanan berjalan normal"
-                    : "Koneksi ke server terputus"}
+                    ? "All services running normally"
+                    : "Server connection lost"}
                 </Text>
               </View>
             </View>
@@ -107,9 +107,9 @@ export default function HomeScreen() {
 
         <View className="px-6 mb-8">
           <View className="flex-row items-end justify-between mb-4">
-            <Text className="text-lg font-bold text-dark">Ringkasan Data</Text>
+            <Text className="text-lg font-bold text-dark">Data Summary</Text>
             <Text className="text-xs text-gray-400 font-medium">
-              Update Real-time
+              Real-time Update
             </Text>
           </View>
 
@@ -126,7 +126,7 @@ export default function HomeScreen() {
                 {stats.criteria}
               </Text>
               <Text className="text-gray-500 text-xs font-medium uppercase tracking-wide">
-                Kriteria Aktif
+                Criteria
               </Text>
             </View>
 
@@ -142,7 +142,7 @@ export default function HomeScreen() {
                 {stats.alternatives}
               </Text>
               <Text className="text-gray-500 text-xs font-medium uppercase tracking-wide">
-                Alternatif
+                Alternatives
               </Text>
             </View>
           </View>
@@ -150,7 +150,7 @@ export default function HomeScreen() {
 
         <View className="px-6">
           <Text className="text-lg font-bold text-dark mb-4">
-            Metode Analisis
+            Analysis Method
           </Text>
           <View className="bg-[#1c1917] p-6 rounded-[32px] shadow-xl shadow-gray-300 relative overflow-hidden">
             <View className="absolute -right-6 -top-6 w-32 h-32 bg-gray-800 rounded-full opacity-40 blur-2xl" />
@@ -161,7 +161,7 @@ export default function HomeScreen() {
                 <View className="flex-row items-center gap-2 mb-1">
                   <TrendingUp color="#fb923c" size={20} />
                   <Text className="text-orange-400 font-bold tracking-widest text-xs uppercase">
-                    Hibrid System
+                    Hybrid System
                   </Text>
                 </View>
                 <Text className="text-white font-black text-2xl">
@@ -174,19 +174,19 @@ export default function HomeScreen() {
             </View>
 
             <Text className="text-gray-400 text-sm mb-6 leading-relaxed">
-              Menggabungkan ketepatan pembobotan objektif dengan efisiensi
-              pemeringkatan kompromi untuk hasil akurat.
+              Combines objective weighting precision with compromise ranking
+              efficiency for accurate results.
             </Text>
 
             <View className="flex-row gap-3">
               <View className="bg-white/10 px-4 py-2 rounded-xl border border-white/5">
                 <Text className="text-white text-xs font-bold">
-                  Objektifitas Tinggi
+                  High Objectivity
                 </Text>
               </View>
               <View className="bg-white/10 px-4 py-2 rounded-xl border border-white/5">
                 <Text className="text-white text-xs font-bold">
-                  Ranking Stabil
+                  Stable Ranking
                 </Text>
               </View>
             </View>
