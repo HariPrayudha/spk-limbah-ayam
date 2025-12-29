@@ -28,7 +28,7 @@ The app communicates with a Python FastAPI Backend to perform calculations using
 
 ## 🛠️ Tech Stack
 
-* **Framework**: [React Native](https://reactnative.dev/) with [Expo SDK 52](https://expo.dev/)
+* **Framework**: [React Native](https://reactnative.dev/) with [Expo SDK 54](https://expo.dev/)
 * **Language**: TypeScript
 * **Styling**: [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
 * **Routing**: [Expo Router](https://docs.expo.dev/router/introduction/)
