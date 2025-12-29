@@ -26,7 +26,6 @@ export default function DataScreen() {
   const { toggleTabBar } = useTabBar();
   const lastContentOffset = useRef(0);
 
-  // State Tab Aktif
   const [activeTab, setActiveTab] = useState<"criteria" | "alternatives">(
     "criteria"
   );
@@ -93,7 +92,6 @@ export default function DataScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFBF7" }}>
-      {/* Header */}
       <View
         style={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 24 }}
       >
@@ -105,39 +103,37 @@ export default function DataScreen() {
             marginBottom: 4,
           }}
         >
-          Data Master
+          Master Data
         </Text>
         <Text style={{ color: "#6b7280", fontSize: 14 }}>
-          Kelola parameter keputusan SPK.
+          Manage decision parameters.
         </Text>
       </View>
 
-      {/* TAB SWITCHER - FIX LOGIC STYLE */}
       <View style={{ paddingHorizontal: 24, marginBottom: 24 }}>
         <View style={styles.tabContainer}>
           <TabButton
             isActive={activeTab === "criteria"}
             onPress={() => setActiveTab("criteria")}
-            label="Kriteria"
+            label="Criteria"
             icon={Tag}
           />
           <TabButton
             isActive={activeTab === "alternatives"}
             onPress={() => setActiveTab("alternatives")}
-            label="Alternatif"
+            label="Alternatives"
             icon={Layers}
           />
         </View>
       </View>
 
-      {/* Content */}
       {loading ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <ActivityIndicator size="large" color="#ea580c" />
           <Text style={{ color: "#9ca3af", marginTop: 16, fontWeight: "500" }}>
-            Mengambil data...
+            Fetching data...
           </Text>
         </View>
       ) : (
@@ -147,7 +143,7 @@ export default function DataScreen() {
               data={criteria}
               keyExtractor={(item) => item.code}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{ paddingBottom: 100 }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -155,7 +151,7 @@ export default function DataScreen() {
               scrollEventThrottle={16}
               renderItem={({ item }) => <CriterionCard item={item} />}
               ListEmptyComponent={
-                <EmptyState message="Tidak ada data kriteria." />
+                <EmptyState message="No criteria data available." />
               }
             />
           ) : (
@@ -163,7 +159,7 @@ export default function DataScreen() {
               data={alternatives}
               keyExtractor={(item) => item.code}
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{ paddingBottom: 100 }}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
@@ -171,7 +167,7 @@ export default function DataScreen() {
               scrollEventThrottle={16}
               renderItem={({ item }) => <AlternativeCard item={item} />}
               ListEmptyComponent={
-                <EmptyState message="Tidak ada data alternatif." />
+                <EmptyState message="No alternative data available." />
               }
             />
           )}
@@ -181,7 +177,6 @@ export default function DataScreen() {
   );
 }
 
-// --- KOMPONEN TAB BUTTON (FIXED STYLE) ---
 const TabButton = ({ isActive, onPress, label, icon: Icon }: any) => {
   return (
     <Pressable
@@ -193,7 +188,7 @@ const TabButton = ({ isActive, onPress, label, icon: Icon }: any) => {
     >
       <Icon
         size={16}
-        color={isActive ? "#ffffff" : "#9ca3af"} // Icon Putih jika Aktif, Abu jika Mati
+        color={isActive ? "#ffffff" : "#9ca3af"}
         strokeWidth={2.5}
       />
       <Text
@@ -207,8 +202,6 @@ const TabButton = ({ isActive, onPress, label, icon: Icon }: any) => {
     </Pressable>
   );
 };
-
-// --- COMPONENTS CARD ---
 
 const CriterionCard = ({ item }: { item: Criterion }) => {
   const isBenefit = item.type.toLowerCase() === "benefit";
@@ -255,7 +248,7 @@ const CriterionCard = ({ item }: { item: Criterion }) => {
           </View>
         </View>
         <Text style={styles.descText} numberOfLines={2}>
-          {item.description || "Tidak ada deskripsi tersedia."}
+          {item.description || "No description available."}
         </Text>
         <View style={styles.trendBadge}>
           {isBenefit ? (
@@ -271,7 +264,7 @@ const CriterionCard = ({ item }: { item: Criterion }) => {
               fontWeight: "500",
             }}
           >
-            {isBenefit ? "Nilai tinggi lebih baik" : "Nilai rendah lebih baik"}
+            {isBenefit ? "Higher value is better" : "Lower value is better"}
           </Text>
         </View>
       </View>
@@ -318,7 +311,6 @@ const EmptyState = ({ message }: { message: string }) => (
   </View>
 );
 
-// --- STYLESHEET (Agar performa styling 100% akurat) ---
 const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: "row",
@@ -341,11 +333,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 12,
   },
-  // Style Aktif (Background Hitam)
   tabButtonActive: {
     backgroundColor: "#1c1917",
   },
-  // Style Tidak Aktif (Background Transparan)
   tabButtonInactive: {
     backgroundColor: "transparent",
   },
@@ -354,16 +344,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
-  // Teks Aktif (Putih)
   tabTextActive: {
     color: "#ffffff",
   },
-  // Teks Tidak Aktif (Abu)
   tabTextInactive: {
     color: "#9ca3af",
   },
-
-  // Card Styles
   card: {
     backgroundColor: "#ffffff",
     padding: 20,
