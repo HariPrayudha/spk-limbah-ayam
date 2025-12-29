@@ -2,12 +2,12 @@ import { useRouter } from "expo-router";
 import { AlertCircle, ArrowLeft, TrendingUp } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Dimensions,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,8 +18,6 @@ const { width } = Dimensions.get("window");
 export default function SensitivityScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
-  // Kita tidak butuh state 'data' raw lagi di UI, cukup chartData yang sudah diproses
   const [chartData, setChartData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -31,14 +29,13 @@ export default function SensitivityScreen() {
       const res = await apiService.runSensitivity();
       processChartData(res);
     } catch (error) {
-      console.error("Gagal load sensitivitas", error);
+      console.error("Failed to load sensitivity data", error);
     } finally {
       setLoading(false);
     }
   };
 
   const processChartData = (res: any) => {
-    // Validasi struktur data dari backend
     if (
       !res ||
       !res.sensitivity_analysis ||
@@ -46,44 +43,32 @@ export default function SensitivityScreen() {
     )
       return;
 
-    const results = res.sensitivity_analysis; // Array hasil per skenario
-
-    // 1. Ambil Skenario Pertama (Alpha 0.0) untuk menentukan Top 3 Awal
+    const results = res.sensitivity_analysis;
     const firstScenario = results[0];
     const firstRanking = firstScenario.ranking;
 
-    // 2. Sortir ranking untuk mendapatkan 3 teratas (Juara 1, 2, 3)
-    // Ingat: Backend mengirim list acak, kita harus sort by 'rank' dulu
     const top3Items = [...firstRanking]
       .sort((a: any, b: any) => a.rank - b.rank)
-      .slice(0, 3); // Ambil 3 terbaik
+      .slice(0, 3);
 
-    // 3. Siapkan Warna Garis
-    const colors = ["#ea580c", "#84cc16", "#3b82f6"]; // Orange, Lime, Blue
+    const colors = ["#ea580c", "#84cc16", "#3b82f6"];
 
-    // 4. Build Data untuk Chart
     const lines = top3Items.map((targetItem: any, index: number) => {
       return {
-        // Simpan metadata ini agar mudah dipakai di Legend (Mencegah Crash)
         code: targetItem.alternative_code,
         name: targetItem.alternative_name,
         color: colors[index],
-
-        // Config Chart
         thickness: 3,
         dataPointColor: colors[index],
-
-        // Loop setiap skenario (Alpha 0.0, 0.1 ... 1.0)
         data: results.map((scenario: any) => {
-          // Cari ranking si alternatif ini di skenario tersebut
           const altData = scenario.ranking.find(
             (r: any) => r.alternative_code === targetItem.alternative_code
           );
           const rankValue = altData ? altData.rank : 0;
 
           return {
-            value: rankValue, // Y Axis = Ranking (1, 2, 3...)
-            label: scenario.alpha.toFixed(1), // X Axis = Alpha (0.1, 0.2...)
+            value: rankValue,
+            label: scenario.alpha.toFixed(1),
             dataPointText: rankValue.toString(),
             textShiftY: -20,
             textColor: colors[index],
@@ -101,7 +86,7 @@ export default function SensitivityScreen() {
       <View className="flex-1 justify-center items-center bg-[#1c1917]">
         <ActivityIndicator size="large" color="#ea580c" />
         <Text className="text-gray-400 mt-4 font-bold">
-          Menghitung Stabilitas Ranking...
+          Calculating Ranking Stability...
         </Text>
       </View>
     );
@@ -109,24 +94,22 @@ export default function SensitivityScreen() {
   return (
     <SafeAreaView className="flex-1 bg-[#FDFBF7]">
       <ScrollView>
-        {/* Header */}
         <View className="p-6">
           <TouchableOpacity
             onPress={() => router.back()}
             className="flex-row items-center mb-4"
           >
             <ArrowLeft color="#1c1917" size={24} />
-            <Text className="text-dark font-bold ml-2">Kembali</Text>
+            <Text className="text-dark font-bold ml-2">Back</Text>
           </TouchableOpacity>
           <Text className="text-2xl font-black text-dark">
-            Uji Sensitivitas
+            Sensitivity Analysis
           </Text>
           <Text className="text-gray-500">
-            Menguji perubahan ranking terhadap variasi parameter (Alpha).
+            Testing ranking changes against parameter variations (Alpha).
           </Text>
         </View>
 
-        {/* Legend (Keterangan) - FIX DISINI */}
         <View className="px-6 flex-row flex-wrap gap-2 mb-6">
           {chartData.map((line: any, idx) => (
             <View
@@ -142,7 +125,6 @@ export default function SensitivityScreen() {
           ))}
         </View>
 
-        {/* Chart Container */}
         <View className="bg-white mx-4 p-4 rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
           {chartData.length > 0 ? (
             <LineChart
@@ -156,7 +138,6 @@ export default function SensitivityScreen() {
               width={width - 60}
               initialSpacing={20}
               spacing={50}
-              // Invert Y Axis trick: Label manual jika perlu, atau biarkan default
               yAxisLabelWidth={30}
               hideRules
               yAxisThickness={0}
@@ -171,31 +152,30 @@ export default function SensitivityScreen() {
             <View className="h-40 justify-center items-center">
               <AlertCircle color="gray" size={24} />
               <Text className="text-gray-400 mt-2">
-                Data chart tidak tersedia
+                Chart data not available
               </Text>
             </View>
           )}
           <Text className="text-center text-xs text-gray-400 mt-6 font-bold">
-            Parameter Alpha (0.0 - 1.0)
+            Alpha Parameter (0.0 - 1.0)
           </Text>
         </View>
 
-        {/* Explanation */}
         <View className="p-6">
           <View className="bg-orange-50 p-4 rounded-xl border border-orange-100 flex-row">
             <TrendingUp color="#ea580c" size={24} />
             <View className="ml-3 flex-1">
               <Text className="font-bold text-orange-800 mb-1">
-                Analisis Stabilitas
+                Stability Analysis
               </Text>
               <Text className="text-orange-700/70 text-xs leading-relaxed">
-                Grafik di atas melacak pergerakan ranking 3 alternatif teratas
-                (berdasarkan hasil awal).
-                {"\n\n"}• Sumbu X: Nilai Alpha (Kombinasi Bobot)
-                {"\n"}• Sumbu Y: Posisi Ranking
+                The chart above tracks the ranking movement of the top 3
+                alternatives (based on initial results).
+                {"\n\n"}• X Axis: Alpha Value (Weight Combination)
+                {"\n"}• Y Axis: Ranking Position
                 {"\n\n"}
-                Jika garis lurus mendatar, ranking stabil. Jika bersilangan,
-                ranking sensitif terhadap perubahan metode pembobotan.
+                If the line is flat, the ranking is stable. If crossing occurs,
+                the ranking is sensitive to weighting method changes.
               </Text>
             </View>
           </View>
