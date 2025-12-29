@@ -4,7 +4,6 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
-// Import file CSS global (WAJIB ADA)
 import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -26,9 +25,7 @@ export default function RootLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {/* Arahkan ke index (Onboarding) */}
       <Stack.Screen name="index" />
-      {/* Arahkan ke Tabs */}
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
