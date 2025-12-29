@@ -1,27 +1,27 @@
 import { useRouter } from "expo-router";
 import {
-    AlertTriangle,
-    CheckCircle2,
-    ChevronRight,
-    Play,
-    Trash2,
-    Wand2,
-    X,
-    XCircle,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronRight,
+  Play,
+  Trash2,
+  Wand2,
+  X,
+  XCircle,
 } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Modal,
-    NativeScrollEvent,
-    NativeSyntheticEvent,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Modal,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBar } from "../../src/context/TabBarContext";
@@ -47,11 +47,11 @@ const REAL_DATA_MATRIX: Record<string, number[]> = {
 };
 
 const SCALE_DESC: Record<string, string[]> = {
-  C3: ["Sangat Kecil", "Niche/Terbatas", "Cukup Ada", "Luas", "Sangat Luas"],
-  C4: ["Sangat Buruk", "Buruk", "Sedang", "Ramah", "Sangat Ramah"],
-  C5: ["Sangat Sulit", "Sulit", "Sedang", "Mudah", "Sangat Mudah"],
-  C6: ["Sangat Terbatas", "Terbatas", "Cukup", "Melimpah", "Sangat Melimpah"],
-  C7: ["Sangat Boros", "Boros", "Netral", "Efisien", "Sangat Efisien"],
+  C3: ["Very Small", "Niche/Limited", "Quite Available", "Wide", "Very Wide"],
+  C4: ["Very Bad", "Bad", "Moderate", "Friendly", "Very Friendly"],
+  C5: ["Very Difficult", "Difficult", "Moderate", "Easy", "Very Easy"],
+  C6: ["Very Limited", "Limited", "Sufficient", "Abundant", "Very Abundant"],
+  C7: ["Very Wasteful", "Wasteful", "Neutral", "Efficient", "Very Efficient"],
 };
 
 const formatCurrency = (value: number) => {
@@ -171,8 +171,8 @@ export default function AnalysisScreen() {
     setMatrix(newMatrix);
     showAlert(
       "success",
-      "Data Terisi",
-      "Data tabel asli berhasil dimuat otomatis."
+      "Data Filled",
+      "Original table data loaded successfully."
     );
   };
 
@@ -181,7 +181,7 @@ export default function AnalysisScreen() {
     showAlert(
       "warning",
       "Reset Data",
-      "Semua input penilaian telah dikosongkan."
+      "All assessment inputs have been cleared."
     );
   };
 
@@ -196,8 +196,8 @@ export default function AnalysisScreen() {
     if (!isComplete && Object.keys(matrix).length === 0) {
       showAlert(
         "error",
-        "Data Kosong",
-        "Mohon lengkapi penilaian sebelum analisis."
+        "Data Empty",
+        "Please complete the assessment before analyzing."
       );
       return;
     }
@@ -227,8 +227,8 @@ export default function AnalysisScreen() {
     } catch (error: any) {
       const msg = error.response?.data?.detail
         ? JSON.stringify(error.response.data.detail)
-        : "Terjadi kesalahan pada server.";
-      showAlert("error", "Gagal Analisis", msg);
+        : "An error occurred on the server.";
+      showAlert("error", "Analysis Failed", msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -243,9 +243,9 @@ export default function AnalysisScreen() {
   return (
     <SafeAreaView className="flex-1 bg-[#FDFBF7]">
       <View className="px-6 pt-6 pb-6 bg-[#FDFBF7]">
-        <Text className="text-3xl font-black text-dark mb-1">Penilaian</Text>
+        <Text className="text-3xl font-black text-dark mb-1">Assessment</Text>
         <Text className="text-gray-500 text-sm">
-          Input nilai untuk setiap alternatif.
+          Input values for each alternative.
         </Text>
       </View>
 
@@ -255,9 +255,7 @@ export default function AnalysisScreen() {
           className="flex-1 bg-orange-100 h-12 rounded-xl flex-row justify-center items-center active:bg-orange-200"
         >
           <Wand2 size={18} color="#ea580c" />
-          <Text className="text-primary font-bold ml-2 text-xs">
-            Isi Otomatis
-          </Text>
+          <Text className="text-primary font-bold ml-2 text-xs">Auto Fill</Text>
         </Pressable>
         <Pressable
           onPress={handleReset}
@@ -310,7 +308,7 @@ export default function AnalysisScreen() {
                     }`}
                   >
                     {isFull
-                      ? "Data Lengkap"
+                      ? "Data Complete"
                       : `Progress: ${filled} / ${criteria.length}`}
                   </Text>
                 </View>
@@ -339,7 +337,7 @@ export default function AnalysisScreen() {
               ) : (
                 <>
                   <Text className="text-white font-bold text-lg mr-2">
-                    Jalankan Analisis
+                    Run Analysis
                   </Text>
                   <Play size={20} color="white" fill="white" />
                 </>
@@ -439,13 +437,13 @@ export default function AnalysisScreen() {
                   ) : (
                     <View>
                       <Text className="text-xs text-gray-400 mb-3 font-medium">
-                        Skala Penilaian
+                        Rating Scale
                       </Text>
                       <View className="gap-2">
                         {[1, 2, 3, 4, 5].map((val) => {
                           const isSelected = inputValues[crit.code] === val;
                           const desc =
-                            SCALE_DESC[crit.code]?.[val - 1] || `Skala ${val}`;
+                            SCALE_DESC[crit.code]?.[val - 1] || `Scale ${val}`;
 
                           return (
                             <Pressable
@@ -476,7 +474,7 @@ export default function AnalysisScreen() {
                                       : "text-gray-600"
                                   }`}
                                 >
-                                  Nilai {val}
+                                  Value {val}
                                 </Text>
                                 <Text className="text-xs text-gray-400 mt-0.5">
                                   {desc}
@@ -500,7 +498,7 @@ export default function AnalysisScreen() {
               className="bg-[#1c1917] h-14 rounded-2xl items-center justify-center shadow-lg shadow-orange-200 active:scale-[0.98]"
             >
               <Text className="text-white font-bold text-lg">
-                Simpan Penilaian
+                Save Assessment
               </Text>
             </Pressable>
           </View>
@@ -537,7 +535,7 @@ export default function AnalysisScreen() {
               onPress={closeAlert}
               className="bg-[#1c1917] w-full h-12 rounded-xl items-center justify-center active:scale-[0.98]"
             >
-              <Text className="text-white font-bold">Mengerti</Text>
+              <Text className="text-white font-bold">Understood</Text>
             </Pressable>
           </View>
         </View>
