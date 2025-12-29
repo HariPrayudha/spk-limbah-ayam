@@ -28,9 +28,10 @@ export default function OnboardingScreen() {
             Eco<Text className="text-primary">Poultry</Text> DSS
           </Text>
           <Text className="text-gray-500 text-center text-base leading-relaxed max-w-xs">
-            Sistem Pendukung Keputusan Pengolahan Limbah Ayam Berkelanjutan
-            dengan metode{" "}
-            <Text className="font-bold text-secondary">CRITIC-MARCOS</Text>.
+            Decision Support System for Sustainable Poultry Waste Management
+            using the{" "}
+            <Text className="font-bold text-secondary">CRITIC-MARCOS</Text>{" "}
+            method.
           </Text>
         </Animated.View>
       </View>
@@ -48,7 +49,7 @@ export default function OnboardingScreen() {
           className="bg-dark h-16 rounded-2xl flex-row items-center justify-center shadow-lg shadow-gray-400 active:opacity-90"
         >
           <Text className="text-white font-bold text-lg mr-2">
-            Mulai Analisis
+            Start Analysis
           </Text>
           <ArrowRight size={20} color="white" />
         </Pressable>
